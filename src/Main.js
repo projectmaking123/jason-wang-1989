@@ -1,14 +1,10 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import AboutMe from './AboutMe'
 import Projects from './Projects'
 import Home from './Home'
 
-class MainApp extends Component {
-  constructor(props) {
-    super(props);
-
-  }
+class MainApp extends Component{
 
   render() {
     return (

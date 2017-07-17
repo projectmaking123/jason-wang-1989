@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
-import { auth, database } from './firebase';
-import pick from 'lodash.pick' ;
+import { auth } from './firebase';
 import HeaderApp from './Header';
 import MainApp from './Main';
-import Sudoku from './Sudoku';
 import './Assets/css/default.min.css';
 
 class App extends Component {

@@ -1,34 +1,52 @@
-import React, { Component, PropTypes } from 'react';
-import Cell from './Cell.js';
-import PlaySudoku from './PlaySudoku'
+import React, { Component } from 'react';
+import InputCell from './InputCell';
+import StaticCell from './StaticCell'
+import { DropdownButton, MenuItem, ButtonGroup } from 'react-bootstrap';
+import {MediaQuery} from 'react-responsive'
 const axios = require('axios');
 
 class Sudoku extends Component {
   constructor(props) {
          super(props);
 
-         this.state = {
-           puzzle: [],
-           value: ''
-         };
+      this.state = {
+        puzzle: ("---------------------------------------------------------------------------------").split(""),
+        value: 'generate',
+        changedPuzzle: '',
+        color: "white",
+        staticIndex: []
+      };
+      this.handleParentChange = this.handleParentChange.bind(this);
+      this.handleChange = this.handleChange.bind(this);
+      this.handleSudokuApi = this.handleSudokuApi.bind(this);
+      this.handlePuzzleApi = this.handlePuzzleApi.bind(this);
+      this.handleValidation = this.handleValidation.bind(this);
+      this.handlePuzzle = this.handlePuzzle.bind(this);
+      this.handleStaticIndex = this.handleStaticIndex.bind(this);
+  }
 
-         this.handleChange = this.handleChange.bind(this);
-         this.solvePuzzle = this.solvePuzzle.bind(this);
-     }
+  componentDidMount() {
+    axios.get('http://sudoku-api.herokuapp.com/api/v1/sudoku')
+    .then(response => {
+      this.setState({ value: response.data.data })
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
 
-     componentDidMount() {
-         axios.get('https://sudoku-api.herokuapp.com/api/v1/sudoku/')
-         .then(response => {
-            this.setState({ value: response.data.data })
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-     }
+  handleStaticIndex(){
+    this.setState({staticIndex: []})
+    this.state.puzzle.forEach( (ele, i) => {
+      if (/[1-9:]/.test(ele)){
+        this.state.staticIndex.push(i)
+      }
+    })
+  }
 
-     solvePuzzle(e) {
+    handleSudokuApi(e) {
        e.preventDefault();
-       axios.get("https://sudoku-api.herokuapp.com/api/v1/sudoku/" + `${this.state.value}`)
+       axios.get("http://sudoku-api.herokuapp.com/api/v1/sudoku/" + `${this.state.value}`)
        .then(response => {
          this.setState({ puzzle: response.data.data})
         })
@@ -37,134 +55,138 @@ class Sudoku extends Component {
         });
      }
 
+     handlePuzzleApi(name) {
+       axios.get("http://sudoku-api.herokuapp.com/api/v1/sudoku/" + name)
+       .then(response => {
+         this.setState({ puzzle: response.data.data})
+         this.handleStaticIndex()
+        })
+        .catch(function (error) {
+          console.log('error', error);
+        });
+     }
+
+     handleValidation(changedPuzzle) {
+       axios.get("http://sudoku-api.herokuapp.com/api/v1/sudoku/validate" + changedPuzzle)
+       .then(response => {
+         this.setState({ color: response.data.data})
+        })
+        .catch(function (error) {
+          console.log('error', error);
+        });
+     }
+
      handleChange(event) {
-        this.setState({value: event.target.value});
+      this.setState({
+          value: event.target.value
+        })
+      }
+
+      handlePuzzle(e) {
+        this.handlePuzzleApi(e.target.name)
+      }
+
+     handleParentChange(changedPuzzle) {
+       this.setState({
+          changedPuzzle
+        })
+        this.handleValidation(changedPuzzle);
       }
 
      render() {
       return(
         <div>
-            <form onSubmit={this.solvePuzzle}>
-                <h1 className="titles"> Enter a puzzle string or type generate to generate a new puzzle:</h1>
-                <h3>Here is an example of a string </h3>
-                  <h3>1-58-2----9--764-52--4--819-19--73-6762-83-9-----61-5---76---3-43--2-5-16--3-89--</h3>
-              <div className="inputbox">
-                <input type="text" value={this.state.value} onChange={this.handleChange} />
-                <input type="submit" value="Submit" />
-              </div>
-            </form>
-            <div className="colleft">
-                  {
-                    this.state.puzzle.map( arr =>
-                      <Cell arr={arr}/>
-                    )
-                  }
+          <h1>INSTRUCTIONS</h1>
+          <div className="instructions">
+            <ul>
+              <li>Select the difficulty of the puzzle you wish to play</li>
+              <li>begin replacing the dashes with your guesses</li>
+              <li>If you make an incorrect guess the board will turn red</li>
+              <li>Paste the printed string below into input below it to solve it.</li>
+            </ul>
+          </div>
+          <div id="droplist">
+            <ButtonGroup justified>
+              <DropdownButton
+                bsSize="large"
+                className="btn btn-primary btn-lg dropdown-toggle"
+                title="SELECT THE LEVEL OF THE PUZZLE"
+                id="dropdown-size-large">
+                <MenuItem
+                  className="btn btn-info"
+                  name={"create easy puzzle"}
+                  onClick={this.handlePuzzle}
+                  >Easy</MenuItem>
+                <MenuItem
+                  className="btn btn-info"
+                  name={"create hard puzzle"}
+                  onClick={this.handlePuzzle}
+                  >Hard</MenuItem>
+                <MenuItem
+                  className="btn btn-info"
+                  name={"create genius puzzle"}
+                  onClick={this.handlePuzzle}
+                  >Genius</MenuItem>
+            </DropdownButton>
+          </ButtonGroup>
+        </div>
+            <div className="board-container">
+              {
+                this.state.puzzle.map( (ele, i) =>
+                  <InputCell
+                      key={i}
+                      index={i}
+                      ele={ele}
+                      color={this.state.color}
+                      board={this.state.puzzle}
+                      handleParentChange={this.handleParentChange}
+                      handleStaticIndex={this.handleStaticIndex}
+                      />)
+                    }
+          </div>
+          <h3>{this.state.puzzle}</h3>
+            <div id="container">
+              <div id="form">
+              <form onSubmit={this.handleSudokuApi} className="entypo-search">
+                <fieldset><input id="search" placeholder="Search" onChange={this.handleChange}/></fieldset>
+              </form>
             </div>
-            <div>
-              <PlaySudoku />
-            </div>
-      </div>
+          </div>
+        </div>
     );
   }
 }
 
 export default Sudoku;
-// <ReactInterval timeout={1000} enabled={true} callback={
-// {
-//   this.state.puzzle.map( puzzle =>
-//    <div className="box">
-//      { puzzle }
-//    </div>
-//   )
-// }
 
-// <div id="colleft" >
-//   <div className="box">{this.state.puzzle[0]}</div>
-//   <div className="box">{this.state.puzzle[1]}</div>
-//   <div className="box">{this.state.puzzle[2]}</div>
-//   <div className="box">{this.state.puzzle[3]}</div>
-//   <div className="box">{this.state.puzzle[4]}</div>
-//   <div className="box">{this.state.puzzle[5]}</div>
-//   <div className="box">{this.state.puzzle[6]}</div>
-//   <div className="box">{this.state.puzzle[7]}</div>
-//   <div className="box newline">{this.state.puzzle[8]}</div>
+// <h1 className="titles"> Enter a puzzle string or type generate to generate a new puzzle:</h1>
+// <h3>Here is an example of a string </h3>
+// <h3>1-58-2----9--764-52--4--819-19--73-6762-83-9-----61-5---76---3-43--2-5-16--3-89--</h3>
+//   <div className="inputbox">
+//     <form onSubmit={this.handleSudokuApi}>
+//       <input type="text" value={this.state.value} onChange={this.handleChange} />
+//       <input type="submit" value="Submit" />
+//     </form>
+//   </div>
 //
-//   <div className="box">{this.state.puzzle[9]}</div>
-//   <div className="box">{this.state.puzzle[10]}</div>
-//   <div className="box">{this.state.puzzle[11]}</div>
-//   <div className="box">{this.state.puzzle[12]}</div>
-//   <div className="box">{this.state.puzzle[13]}</div>
-//   <div className="box">{this.state.puzzle[14]}</div>
-//   <div className="box">{this.state.puzzle[15]}</div>
-//   <div className="box">{this.state.puzzle[16]}</div>
-//   <div className="box newline">{this.state.puzzle[17]}</div>
-//
-//   <div className="box">{this.state.puzzle[18]}</div>
-//   <div className="box">{this.state.puzzle[19]}</div>
-//   <div className="box">{this.state.puzzle[20]}</div>
-//   <div className="box">{this.state.puzzle[21]}</div>
-//   <div className="box">{this.state.puzzle[22]}</div>
-//   <div className="box">{this.state.puzzle[23]}</div>
-//   <div className="box">{this.state.puzzle[24]}</div>
-//   <div className="box">{this.state.puzzle[25]}</div>
-//   <div className="box newline">{this.state.puzzle[26]}</div>
-//
-//   <div className="box">{this.state.puzzle[27]}</div>
-//   <div className="box">{this.state.puzzle[28]}</div>
-//   <div className="box">{this.state.puzzle[29]}</div>
-//   <div className="box">{this.state.puzzle[30]}</div>
-//   <div className="box">{this.state.puzzle[31]}</div>
-//   <div className="box">{this.state.puzzle[32]}</div>
-//   <div className="box">{this.state.puzzle[33]}</div>
-//   <div className="box">{this.state.puzzle[34]}</div>
-//   <div className="box newline">{this.state.puzzle[35]}</div>
-//
-//   <div className="box">{this.state.puzzle[36]}</div>
-//   <div className="box">{this.state.puzzle[37]}</div>
-//   <div className="box">{this.state.puzzle[38]}</div>
-//   <div className="box">{this.state.puzzle[39]}</div>
-//   <div className="box">{this.state.puzzle[40]}</div>
-//   <div className="box">{this.state.puzzle[41]}</div>
-//   <div className="box">{this.state.puzzle[42]}</div>
-//   <div className="box">{this.state.puzzle[43]}</div>
-//   <div className="box newline">{this.state.puzzle[44]}</div>
-//
-//   <div className="box">{this.state.puzzle[45]}</div>
-//   <div className="box">{this.state.puzzle[46]}</div>
-//   <div className="box">{this.state.puzzle[47]}</div>
-//   <div className="box">{this.state.puzzle[48]}</div>
-//   <div className="box">{this.state.puzzle[49]}</div>
-//   <div className="box">{this.state.puzzle[50]}</div>
-//   <div className="box">{this.state.puzzle[51]}</div>
-//   <div className="box">{this.state.puzzle[52]}</div>
-//   <div className="box newline">{this.state.puzzle[53]}</div>
-//
-//   <div className="box">{this.state.puzzle[54]}</div>
-//   <div className="box">{this.state.puzzle[55]}</div>
-//   <div className="box">{this.state.puzzle[56]}</div>
-//   <div className="box">{this.state.puzzle[57]}</div>
-//   <div className="box">{this.state.puzzle[58]}</div>
-//   <div className="box">{this.state.puzzle[59]}</div>
-//   <div className="box">{this.state.puzzle[60]}</div>
-//   <div className="box">{this.state.puzzle[61]}</div>
-//   <div className="box newline">{this.state.puzzle[62]}</div>
-//
-//   <div className="box">{this.state.puzzle[63]}</div>
-//   <div className="box">{this.state.puzzle[64]}</div>
-//   <div className="box">{this.state.puzzle[65]}</div>
-//   <div className="box">{this.state.puzzle[66]}</div>
-//   <div className="box">{this.state.puzzle[67]}</div>
-//   <div className="box">{this.state.puzzle[68]}</div>
-//   <div className="box">{this.state.puzzle[69]}</div>
-//   <div className="box">{this.state.puzzle[70]}</div>
-//   <div className="box newline">{this.state.puzzle[71]}</div>
-//
-//   <div className="box">{this.state.puzzle[72]}</div>
-//   <div className="box">{this.state.puzzle[73]}</div>
-//   <div className="box">{this.state.puzzle[74]}</div>
-//   <div className="box">{this.state.puzzle[75]}</div>
-//   <div className="box">{this.state.puzzle[76]}</div>
-//   <div className="box">{this.state.puzzle[77]}</div>
-//   <div className="box">{this.state.puzzle[78]}</div>
-//   <div className="box">{this.state.puzzle[79]}</div>
-//   <div className="box newline">{this.state.puzzle[80]}</div>
+// {
+//   this.state.puzzle.map( (ele, i) => {
+//     if((ele === '-') || (ele === '') || this.state.color === '#FFBABA') {
+//       return (<InputCell
+//         key={i}
+//         index={i}
+//         ele={ele}
+//         color={this.state.color}
+//         board={this.state.puzzle}
+//         handleParentChange={this.handleParentChange}
+//         handleStaticIndex={this.handleStaticIndex}
+//         />)
+//     } else {
+//       return (<StaticCell
+//         key={i}
+//         ele={ele}
+//         color={this.state.color}
+//         />)
+//     }
+// })
+// }
