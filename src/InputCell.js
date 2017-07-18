@@ -11,7 +11,6 @@ class InputCell extends Component {
     }
     this.handleChange = this.handleChange.bind(this)
     this.limitRange = this.limitRange.bind(this)
-
   }
 
   componentDidUpdate() {
@@ -24,16 +23,18 @@ class InputCell extends Component {
   }
 
   limitRange(e) {
-    const limit = /[1-9:]/;
+    const limit = /[1-9:-]/;
     if (!limit.test(e.key)) {
       e.preventDefault();
     }
   }
 
   handleChange(event) {
-    this.state.board[parseInt(this.props.index)] = event.target.value
+    const board = this.state.board
+    board[parseInt(this.props.index, 10)] = event.target.value
     this.setState({
-      value: event.target.value
+      value: event.target.value,
+      board
     });
     this.props.handleParentChange(this.state.board.join(""));
     this.props.handleStaticIndex();
@@ -43,6 +44,7 @@ class InputCell extends Component {
     return (
       <div>
           <input
+            disabled={this.props.disabled}
             className="box"
             maxLength={1}
             style={{backgroundColor: this.props.color}}

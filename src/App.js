@@ -7,8 +7,6 @@ import './Assets/css/default.min.css';
 class App extends Component {
   constructor(props) {
   super(props);
-  this.usersRef = null;
-  this.userRef = null;
   this.state = {
     user: null
   };

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { auth, googleAuthProvider } from './firebase';
-import { MenuItem } from 'react-bootstrap';
-
 
 class SignIn extends Component {
   render() {

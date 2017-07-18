@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import InputCell from './InputCell';
-import StaticCell from './StaticCell'
+import Timer from './Timer';
 import { DropdownButton, MenuItem, ButtonGroup } from 'react-bootstrap';
-import {MediaQuery} from 'react-responsive'
 const axios = require('axios');
 
 class Sudoku extends Component {
@@ -14,7 +13,8 @@ class Sudoku extends Component {
         value: 'generate',
         changedPuzzle: '',
         color: "white",
-        staticIndex: []
+        staticIndex: [],
+        timerOn: false
       };
       this.handleParentChange = this.handleParentChange.bind(this);
       this.handleChange = this.handleChange.bind(this);
@@ -23,10 +23,11 @@ class Sudoku extends Component {
       this.handleValidation = this.handleValidation.bind(this);
       this.handlePuzzle = this.handlePuzzle.bind(this);
       this.handleStaticIndex = this.handleStaticIndex.bind(this);
+      this.stopTimer = this.stopTimer.bind(this)
   }
 
   componentDidMount() {
-    axios.get('http://sudoku-api.herokuapp.com/api/v1/sudoku')
+    axios.get('https://sudoku-api.herokuapp.com/api/v1/sudoku')
     .then(response => {
       this.setState({ value: response.data.data })
     })
@@ -35,20 +36,32 @@ class Sudoku extends Component {
     });
   }
 
+  stopTimer() {
+    this.setState({ timerOn: false })
+  }
+
   handleStaticIndex(){
-    this.setState({staticIndex: []})
-    this.state.puzzle.forEach( (ele, i) => {
-      if (/[1-9:]/.test(ele)){
-        this.state.staticIndex.push(i)
-      }
-    })
+    if (this.state.staticIndex[0] !== undefined) {
+      return this.state.staticIndex;
+    } else {
+      const collectStaticIndex = [];
+      this.state.puzzle.forEach( (ele, i) => {
+        if (/[1-9:]/.test(ele)){
+          collectStaticIndex.push(i)
+        }
+      })
+      this.setState({staticIndex: collectStaticIndex})
+    }
   }
 
     handleSudokuApi(e) {
-       e.preventDefault();
-       axios.get("http://sudoku-api.herokuapp.com/api/v1/sudoku/" + `${this.state.value}`)
+      e.preventDefault();
+       this.setState({
+         staticIndex: []
+       })
+       axios.get(`https://sudoku-api.herokuapp.com/api/v1/sudoku/${this.state.value}`)
        .then(response => {
-         this.setState({ puzzle: response.data.data})
+         this.setState({ puzzle: response.data.data })
         })
         .catch(function (error) {
           console.log('error', error);
@@ -56,7 +69,8 @@ class Sudoku extends Component {
      }
 
      handlePuzzleApi(name) {
-       axios.get("http://sudoku-api.herokuapp.com/api/v1/sudoku/" + name)
+       this.setState({staticIndex: []})
+       axios.get(`https://sudoku-api.herokuapp.com/api/v1/sudoku/${name}`)
        .then(response => {
          this.setState({ puzzle: response.data.data})
          this.handleStaticIndex()
@@ -67,7 +81,7 @@ class Sudoku extends Component {
      }
 
      handleValidation(changedPuzzle) {
-       axios.get("http://sudoku-api.herokuapp.com/api/v1/sudoku/validate" + changedPuzzle)
+       axios.get(`https://sudoku-api.herokuapp.com/api/v1/sudoku/validate${changedPuzzle}`)
        .then(response => {
          this.setState({ color: response.data.data})
         })
@@ -83,7 +97,8 @@ class Sudoku extends Component {
       }
 
       handlePuzzle(e) {
-        this.handlePuzzleApi(e.target.name)
+        this.handlePuzzleApi(e.target.name);
+        this.setState({ timerOn: true })
       }
 
      handleParentChange(changedPuzzle) {
@@ -100,8 +115,8 @@ class Sudoku extends Component {
           <div className="instructions">
             <ul>
               <li>Select the difficulty of the puzzle you wish to play</li>
-              <li>begin replacing the dashes with your guesses</li>
-              <li>If you make an incorrect guess the board will turn red</li>
+              <li>Replace the dashes with your guesses, green can not be changed</li>
+              <li>If you make an invalid guess the board will turn red</li>
               <li>Paste the printed string below into input below it to solve it.</li>
             </ul>
           </div>
@@ -130,63 +145,45 @@ class Sudoku extends Component {
             </DropdownButton>
           </ButtonGroup>
         </div>
+
+        <Timer
+          timerState={this.state.timerOn}
+          handleSudokuApi={this.handleSudokuApi}
+          stopTimer={this.stopTimer}
+          />
+
             <div className="board-container">
               {
-                this.state.puzzle.map( (ele, i) =>
-                  <InputCell
+                this.state.puzzle.map( (ele, i) => {
+                  if(!this.state.staticIndex.includes(i)) {
+                    return (<InputCell
                       key={i}
                       index={i}
                       ele={ele}
                       color={this.state.color}
+                      disabled={''}
                       board={this.state.puzzle}
                       handleParentChange={this.handleParentChange}
                       handleStaticIndex={this.handleStaticIndex}
                       />)
-                    }
-          </div>
-          <h3>{this.state.puzzle}</h3>
-            <div id="container">
-              <div id="form">
-              <form onSubmit={this.handleSudokuApi} className="entypo-search">
-                <fieldset><input id="search" placeholder="Search" onChange={this.handleChange}/></fieldset>
-              </form>
-            </div>
-          </div>
+                  } else {
+                    return (<InputCell
+                      key={i}
+                      index={i}
+                      ele={ele}
+                      color={'#7FFF00'}
+                      disabled={'disabled'}
+                      board={this.state.puzzle}
+                      handleParentChange={this.handleParentChange}
+                      handleStaticIndex={this.handleStaticIndex}
+                      />)
+                  }
+              })
+            }
         </div>
+      </div>
     );
   }
 }
 
 export default Sudoku;
-
-// <h1 className="titles"> Enter a puzzle string or type generate to generate a new puzzle:</h1>
-// <h3>Here is an example of a string </h3>
-// <h3>1-58-2----9--764-52--4--819-19--73-6762-83-9-----61-5---76---3-43--2-5-16--3-89--</h3>
-//   <div className="inputbox">
-//     <form onSubmit={this.handleSudokuApi}>
-//       <input type="text" value={this.state.value} onChange={this.handleChange} />
-//       <input type="submit" value="Submit" />
-//     </form>
-//   </div>
-//
-// {
-//   this.state.puzzle.map( (ele, i) => {
-//     if((ele === '-') || (ele === '') || this.state.color === '#FFBABA') {
-//       return (<InputCell
-//         key={i}
-//         index={i}
-//         ele={ele}
-//         color={this.state.color}
-//         board={this.state.puzzle}
-//         handleParentChange={this.handleParentChange}
-//         handleStaticIndex={this.handleStaticIndex}
-//         />)
-//     } else {
-//       return (<StaticCell
-//         key={i}
-//         ele={ele}
-//         color={this.state.color}
-//         />)
-//     }
-// })
-// }

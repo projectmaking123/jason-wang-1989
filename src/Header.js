@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import CurrentUser from './CurrentUser';
 import SignIn from './SignIn';
-import { DropdownButton, MenuItem, ButtonGroup } from 'react-bootstrap';
 
 class HeaderApp extends Component {
   render() {
@@ -13,13 +12,13 @@ class HeaderApp extends Component {
           </h1>
           <div className="button-row">
             <div>
-              <a href='/' title="Home"></a>
+              <a href='/' title="Home">Home</a>
               </div>
             <div>
-              <a href='/projects' title="Play Sudoku!"></a>
+              <a href='/projects' title="Play Sudoku!">Play Sudoku!</a>
               </div>
               <div>
-                <a href='/aboutme' title="About Me"></a>
+                <a href='/aboutme' title="About Me">About Me</a>
                 </div>
                 <div>
                   {
