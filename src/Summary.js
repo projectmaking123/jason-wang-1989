@@ -6,12 +6,9 @@ class Summary extends Component {
       <div>
       <h1 className="titles">Summary</h1>
         <p>
-          Creating has always been a passion of mine. In high school I studied architecture, then majored in english literature in college.
-          However once I graduated, I went to in banking, and ultimately I was unsatisfied. Learning to become a developer has reignited
-          my urge to create and be a part of something I can be proud of. I have also recently become serious about fitness and my own body.
-          Writing code that was DRY, made me want to become a more efficient person overall, espically with my body. Since March 2017 I have trained
-          my body 6 out of 7 days a week. I inherited this discipline from the same work ethic that I needed to get through Dev Bootcamp.
-          Working both body and mind so intensely has elevated me to a new understanding and appreciation of not only creation but its sustainability as well.
+          I studied architecture in high school, then English Literature in college, and ended up in banking after college.
+          My architecture influence trained me to create solutions that have both utility and aesthetic, this translates into sustainable and readable code.
+          The literature background gives me the ability to write code that narrates with intention, not only describing it, but as well as how it should evolve.
         </p>
       </div>
     );

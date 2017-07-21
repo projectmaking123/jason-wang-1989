@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import InputCell from './InputCell';
 import Timer from './Timer';
-import { DropdownButton, MenuItem, ButtonGroup } from 'react-bootstrap';
+import { database } from './firebase'
 const axios = require('axios');
 
 class Sudoku extends Component {
@@ -14,7 +14,8 @@ class Sudoku extends Component {
         changedPuzzle: '',
         color: "white",
         staticIndex: [],
-        timerOn: false
+        timerOn: false,
+        user: null
       };
       this.handleParentChange = this.handleParentChange.bind(this);
       this.handleChange = this.handleChange.bind(this);
@@ -24,16 +25,36 @@ class Sudoku extends Component {
       this.handlePuzzle = this.handlePuzzle.bind(this);
       this.handleStaticIndex = this.handleStaticIndex.bind(this);
       this.stopTimer = this.stopTimer.bind(this)
+      this.databaseUpdate = this.databaseUpdate.bind(this)
+      this.databaseRetrieve = this.databaseRetrieve.bind(this)
   }
 
-  componentDidMount() {
-    axios.get('https://sudoku-api.herokuapp.com/api/v1/sudoku')
-    .then(response => {
-      this.setState({ value: response.data.data })
+  componentDidmount() {
+      if (this.props.user) {
+        this.setState({user: this.props.user})
+      }
+      axios.get('https://sudoku-api.herokuapp.com/api/v1/sudoku')
+      .then(response => {
+        this.setState({ value: response.data.data })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+
+  databaseRetrieve() {
+    this.userRef = database.ref(`/${this.props.user.uid}`)
+    this.userRef.on('value', (snapshot) => {
+      this.setState({
+        puzzle: snapshot.val()[0].split(""),
+        staticIndex: snapshot.val()[1]
+      })
     })
-    .catch(function (error) {
-      console.log(error);
-    });
+  }
+
+  databaseUpdate() {
+    this.userRef = database.ref(`/${this.props.user.uid}`)
+    this.userRef.set([this.state.puzzle.join(""), this.state.staticIndex])
   }
 
   stopTimer() {
@@ -56,9 +77,6 @@ class Sudoku extends Component {
 
     handleSudokuApi(e) {
       e.preventDefault();
-       this.setState({
-         staticIndex: []
-       })
        axios.get(`https://sudoku-api.herokuapp.com/api/v1/sudoku/${this.state.value}`)
        .then(response => {
          this.setState({ puzzle: response.data.data })
@@ -72,7 +90,9 @@ class Sudoku extends Component {
        this.setState({staticIndex: []})
        axios.get(`https://sudoku-api.herokuapp.com/api/v1/sudoku/${name}`)
        .then(response => {
-         this.setState({ puzzle: response.data.data})
+         this.setState({
+           puzzle: response.data.data
+         })
          this.handleStaticIndex()
         })
         .catch(function (error) {
@@ -96,8 +116,8 @@ class Sudoku extends Component {
         })
       }
 
-      handlePuzzle(e) {
-        this.handlePuzzleApi(e.target.name);
+      handlePuzzle(name) {
+        this.handlePuzzleApi(name);
         this.setState({ timerOn: true })
       }
 
@@ -111,50 +131,23 @@ class Sudoku extends Component {
      render() {
       return(
         <div>
-          <h1>INSTRUCTIONS</h1>
-          <div className="instructions">
-            <ul>
-              <li>Select the difficulty of the puzzle you wish to play</li>
-              <li>Replace the dashes with your guesses, green can not be changed</li>
-              <li>If you make an invalid guess the board will turn red</li>
-              <li>Paste the printed string below into input below it to solve it.</li>
-            </ul>
-          </div>
-          <div id="droplist">
-            <ButtonGroup justified>
-              <DropdownButton
-                bsSize="large"
-                className="btn btn-primary btn-lg dropdown-toggle"
-                title="SELECT THE LEVEL OF THE PUZZLE"
-                id="dropdown-size-large">
-                <MenuItem
-                  className="btn btn-info"
-                  name={"create easy puzzle"}
-                  onClick={this.handlePuzzle}
-                  >Easy</MenuItem>
-                <MenuItem
-                  className="btn btn-info"
-                  name={"create hard puzzle"}
-                  onClick={this.handlePuzzle}
-                  >Hard</MenuItem>
-                <MenuItem
-                  className="btn btn-info"
-                  name={"create genius puzzle"}
-                  onClick={this.handlePuzzle}
-                  >Genius</MenuItem>
-            </DropdownButton>
-          </ButtonGroup>
-        </div>
 
-        <Timer
-          timerState={this.state.timerOn}
-          handleSudokuApi={this.handleSudokuApi}
-          stopTimer={this.stopTimer}
-          />
+
+        <div>
+          <Timer
+            timerState={this.state.timerOn}
+            handleSudokuApi={this.handleSudokuApi}
+            stopTimer={this.stopTimer}
+            user={this.props.user}
+            databaseUpdate={this.databaseUpdate}
+            databaseRetrieve={this.databaseRetrieve}
+            handlePuzzle={this.handlePuzzle}
+            />
+        </div>
 
             <div className="board-container">
               {
-                this.state.puzzle.map( (ele, i) => {
+                this.state.puzzle.map((ele, i) => {
                   if(!this.state.staticIndex.includes(i)) {
                     return (<InputCell
                       key={i}

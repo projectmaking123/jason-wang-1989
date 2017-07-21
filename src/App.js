@@ -8,20 +8,26 @@ class App extends Component {
   constructor(props) {
   super(props);
   this.state = {
-    user: null
-  };
-}
+      currentUser: null,
+      puzzles: null,
+      currentConditions: null
+    }
+  }
 
-componentDidMount() {
-  auth.onAuthStateChanged((user) => {
-    this.setState({user})
-  })
-}
+  componentDidMount() {
+    auth.onAuthStateChanged((currentUser) => {
+      this.setState({currentUser});
+    });
+  }
+
   render() {
     return (
       <div>
-        <HeaderApp user={this.state.user}/>
-        <MainApp />
+        <div>
+
+        </div>
+        <HeaderApp user={this.state.currentUser} />
+        <MainApp user={this.state.currentUser} />
       </div>
     );
   }

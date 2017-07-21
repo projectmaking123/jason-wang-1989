@@ -2,12 +2,24 @@ import React, { Component } from 'react';
 import Sudoku from './Sudoku'
 
 class Projects extends Component {
+  constructor(props) {
+  super(props);
+  this.state = {
+      user: null
+    }
+  }
+
+  componentDidUpdate(){
+    if(this.props.user && !this.state.user) {
+      this.setState({user: this.props.user})
+    }
+  }
 
   render() {
     return (
       <div>
         <div>
-          <Sudoku />
+          <Sudoku user={this.state.user}/>
         </div>
       </div>
     );
