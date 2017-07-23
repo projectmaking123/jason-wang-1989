@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import CurrentUser from './CurrentUser';
 import SignIn from './SignIn';
-import FontAwesome from 'react-fontawesome';
 
 class HeaderApp extends Component {
   render() {
@@ -13,7 +12,7 @@ class HeaderApp extends Component {
           </h1>
           <div className="button-row">
             <div>
-              <a href='/' title='Home'> 
+              <a href='/' title='Home'>
                 </a>
               </div>
             <div>
