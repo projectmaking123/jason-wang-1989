@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Icons from './Icons'
 
 class Home extends Component {
   constructor(props) {
@@ -10,10 +11,11 @@ class Home extends Component {
       daily: [],
       summary: '',
       value: '',
-      lat: '',
-      lng: ''
+      lat: null,
+      lng: null
     }
 
+    this.handleForecast = this.handleForecast.bind(this)
     this.handleCity = this.handleCity.bind(this)
   }
 
@@ -23,17 +25,21 @@ class Home extends Component {
 
   handleCity(e) {
     e.preventDefault()
-    axios.get(`http://maps.googleapis.com/maps/api/geocode/json?address=${this.state.value}&sensor=false`)
+    axios.get(`http://maps.googleapis.com/maps/api/geocode/json?address=${this.state.value}`)
     .then(response => {
       this.setState({
         lat: response.data.results[0].geometry.location.lat,
         lng: response.data.results[0].geometry.location.lng
       })
+      this.handleForecast();
     })
     .catch(function (error) {
       console.log(error);
     });
 
+  }
+
+  handleForecast() {
     axios.get(`https://api.darksky.net/forecast/9d7ddb99e04527e685250ca72ac20594/${this.state.lat},${this.state.lng}`)
     .then(response => {
       this.setState({
@@ -50,13 +56,9 @@ class Home extends Component {
 
 
   render() {
-    const currentDate = new Date()
-    const day = currentDate.getDate()
-    const month = currentDate.getMonth() + 1
-
     return (
      <div>
-       <p>Enter A State's Initials or full name to get a 7 day Forecast</p>
+       <p>Enter below a country, state, or city's initials or full name to get a 7 day forecast</p>
        <div id="container">
         <div id="form">
           <form onSubmit={this.handleCity} className="entypo-search">
@@ -71,44 +73,13 @@ class Home extends Component {
         <div className="temp-container">
           {
             this.state.daily.map((date,key) =>
-            <div key={key}>
-              <section className="day-temp" key={key}>
-                { month + "/" + parseInt(day + key, 10) + " "}
-                <p key={key}>{ date.apparentTemperatureMax }</p>
-                <i className={"wi " + date.icon }></i>
-              </section>
-            </div>
-          )
-        }
-      </div>
-      <h1 id="home">Design With Intention</h1>
-      <h1>
-        <i className="wi-rain"></i>
-      </h1>
-      <div>
-        <h2 id="quote">
-          "Very well, then I contradict myself, I am large, I contain multitudes."
-        </h2>
-        <div>
-          <div id="author">
-            - Walt Whitman
-          </div>
+              <Icons date={date} i={key} key={key}/>
+            )
+          }
         </div>
-      </div>
      </div>
     );
   }
 }
 
 export default Home;
-
-      // <Skycons color='white' icon={'CLEAR_DAY'} />
-
-// <section className="day-temp">{ month + "/" + parseInt(day, 10) }</section>
-// <section className="day-temp">{ month + "/" + parseInt(day + 1, 10) }</section>
-// <section className="day-temp">{ month + "/" + parseInt(day + 2, 10) }</section>
-// <section className="day-temp">{ month + "/" + parseInt(day + 3, 10) }</section>
-// <section className="day-temp">{ month + "/" + parseInt(day + 4, 10) }</section>
-// <section className="day-temp">{ month + "/" + parseInt(day + 5, 10) }</section>
-// <section className="day-temp">{ month + "/" + parseInt(day + 6, 10) }</section>
-// <section className="day-temp">{ month + "/" + parseInt(day + 7, 10) }</section>
