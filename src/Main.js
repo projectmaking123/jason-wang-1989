@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import AboutMe from './AboutMe'
+import Home from './AboutMe'
 import Projects from './Projects'
-import Home from './Home'
 
 class MainApp extends Component{
   constructor(props) {
@@ -33,7 +32,6 @@ class MainApp extends Component{
       <div>
        <Switch>
          <Route exact path='/' component={Home}/>
-         <Route path='/aboutme' component={AboutMe}/>
          <Route path='/projects' render={MyProjectPage}/>
          <Route default component={FourOhFour} />
        </Switch>
@@ -43,3 +41,5 @@ class MainApp extends Component{
 }
 
 export default MainApp;
+
+// <Route path='/aboutme' component={AboutMe}/>

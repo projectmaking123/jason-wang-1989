@@ -17,11 +17,8 @@ class HeaderApp extends Component {
               </div>
             <div>
               <a href='/projects' title="Play Sudoku!">Play Sudoku!</a>
-              </div>
-              <div>
-                <a href='/aboutme' title="About Me">About Me</a>
-                </div>
-                <div>
+            </div>
+            <div>
                   {
                     this.props.user
                     ?

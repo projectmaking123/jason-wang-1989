@@ -4,7 +4,7 @@ import Future from './Future';
 import FontAwesome from 'react-fontawesome';
 import Mailto from 'react-mailto'
 
-class AboutMe extends Component {
+class Home extends Component {
 
   render() {
     return (
@@ -44,4 +44,4 @@ class AboutMe extends Component {
   }
 }
 
-export default AboutMe;
+export default Home;

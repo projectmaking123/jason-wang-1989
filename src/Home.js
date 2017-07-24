@@ -25,7 +25,7 @@ class Home extends Component {
 
   handleCity(e) {
     e.preventDefault()
-    axios.get(`http://maps.googleapis.com/maps/api/geocode/json?address=${this.state.value}`)
+    axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${this.state.value}`)
     .then(response => {
       this.setState({
         lat: response.data.results[0].geometry.location.lat,
@@ -40,7 +40,13 @@ class Home extends Component {
   }
 
   handleForecast() {
-    axios.get(`https://api.darksky.net/forecast/9d7ddb99e04527e685250ca72ac20594/${this.state.lat},${this.state.lng}`)
+    const config = {
+      url: `https://api.darksky.net/forecast/9d7ddb99e04527e685250ca72ac20594/${this.state.lat},${this.state.lng}`,
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      },
+    };
+    axios.request(config)
     .then(response => {
       this.setState({
         currentTemp: response.data.currently.apparentTemperature,
@@ -62,7 +68,7 @@ class Home extends Component {
        <div id="container">
         <div id="form">
           <form onSubmit={this.handleCity} className="entypo-search">
-            <fieldset><input id="search" placeholder="Search For A State" value={this.state.value} onChange={(event) => this.setState({value: event.target.value})} /></fieldset>
+            <fieldset><input id="search" placeholder="Search" value={this.state.value} onChange={(event) => this.setState({value: event.target.value})} /></fieldset>
             <input type="submit"/>
           </form>
         </div>

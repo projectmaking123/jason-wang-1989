@@ -28,7 +28,6 @@ class Sudoku extends Component {
       this.stopTimer = this.stopTimer.bind(this)
       this.databaseUpdate = this.databaseUpdate.bind(this)
       this.databaseRetrieve = this.databaseRetrieve.bind(this)
-      this.apiTest = this.apiTest.bind(this)
 
   }
 
@@ -39,18 +38,6 @@ class Sudoku extends Component {
       axios.get('https://sudoku-api.herokuapp.com/api/v1/sudoku')
       .then(response => {
         this.setState({ value: response.data.data })
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    }
-
-    apiTest(event) {
-      event.preventDefault();
-      axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${this.state.value}&APPID=5714ebf86d97f25727002cb7621f76cc`)
-      .then(response => {
-        console.log(response.data.weather[0]);
-        this.setState({ test: response.data.weather})
       })
       .catch(function (error) {
         console.log(error);
@@ -146,28 +133,24 @@ class Sudoku extends Component {
      render() {
       return(
         <div>
-          <form onSubmit={this.apiTest}>
-            <input value={this.state.value} onChange={this.handleChange}/>
-            <input type='submit'/>
-          </form>
-
-        <div>
-          <Timer
-            timerState={this.state.timerOn}
-            handleSudokuApi={this.handleSudokuApi}
-            stopTimer={this.stopTimer}
-            user={this.props.user}
-            databaseUpdate={this.databaseUpdate}
-            databaseRetrieve={this.databaseRetrieve}
-            handlePuzzle={this.handlePuzzle}
-            />
-        </div>
+          <div>
+            <Timer
+              timerState={this.state.timerOn}
+              handleSudokuApi={this.handleSudokuApi}
+              stopTimer={this.stopTimer}
+              user={this.props.user}
+              databaseUpdate={this.databaseUpdate}
+              databaseRetrieve={this.databaseRetrieve}
+              handlePuzzle={this.handlePuzzle}
+              />
+          </div>
 
             <div className="board-container">
               {
                 this.state.puzzle.map((ele, i) => {
                   if(!this.state.staticIndex.includes(i)) {
-                    return (<InputCell
+                    return (
+                      <InputCell
                       key={i}
                       index={i}
                       ele={ele}
@@ -178,7 +161,8 @@ class Sudoku extends Component {
                       handleStaticIndex={this.handleStaticIndex}
                       />)
                   } else {
-                    return (<InputCell
+                    return (
+                      <InputCell
                       key={i}
                       index={i}
                       ele={ele}
