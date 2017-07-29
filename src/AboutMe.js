@@ -41,7 +41,7 @@ class Home extends Component {
             <div id="projects">
               <ul>
                 <li style={{textAlign: 'center', fontSize: '40px', listStyle: 'none'}}>
-                  <a href="https://tutor-skill.herokuapp.com">My final group project</a>
+                  <a href="https://tutor-skill.herokuapp.com">Skill-Up</a>
                 </li>
               </ul>
             </div>

@@ -39,6 +39,7 @@ class Timer extends Component {
     clearInterval(this.timer)
     this.props.stopTimer()
     this.props.handleSudokuApi(e)
+    this.props.handleFinishedPuzzle()
   }
 
   handleParentDatabaseUpdate() {
@@ -67,9 +68,10 @@ class Timer extends Component {
       <div className="instructions">
         <ul>
           <li>Select the difficulty of the puzzle you wish to play</li>
-          <li>Replace the dashes with your guesses, green can not be changed</li>
+          <li>Replace the dashes with your guesses, green colored boxes can not be changed</li>
           <li>If you make an invalid guess the board will turn red</li>
-          <li>Paste the printed string below into input below it to solve it.</li>
+          <li>The board remaining white does not mean the input is absolute, meaning there can be multiple valid inputs</li>
+          <li>Press the solve button to watch the board be solved</li>
         </ul>
       </div>
       <div id="droplist">

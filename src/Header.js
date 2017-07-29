@@ -6,19 +6,20 @@ class HeaderApp extends Component {
   render() {
     return (
       <header>
-        <div className="main">
           <h1 id="welcome">Welcome {this.props.user && this.props.user.displayName}
             {!this.props.user && null}
           </h1>
-          <div className="button-row">
-            <div>
-              <a href='/' title='Home'>
-                </a>
-              </div>
-            <div>
-              <a href='/projects' title="Play Sudoku!">Play Sudoku!</a>
-            </div>
-            <div>
+          <div className='row'>
+            <div className="main">
+              <div className="button-row">
+                <div className='col-xs-6 col-sm-3'>
+                  <a href='/' title='Home'>
+                    </a>
+                </div>
+                <div className='col-xs-6 col-sm-3'>
+                  <a href='/sudoku' title="Play Sudoku!">Play Sudoku!</a>
+                </div>
+                <div className='col-xs-6 col-sm-3'>
                   {
                     this.props.user
                     ?
@@ -26,8 +27,10 @@ class HeaderApp extends Component {
                     : <SignIn />
                   }
                 </div>
+              </div>
+            </div>
           </div>
-        </div>
+          
       </header>
     );
   }

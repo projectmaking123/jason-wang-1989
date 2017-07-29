@@ -28,7 +28,13 @@ class Sudoku extends Component {
       this.stopTimer = this.stopTimer.bind(this)
       this.databaseUpdate = this.databaseUpdate.bind(this)
       this.databaseRetrieve = this.databaseRetrieve.bind(this)
+      this.handleFinishedPuzzle = this.handleFinishedPuzzle.bind(this)
+  }
 
+  componentDidUpdate(){
+    if(this.props.user && !this.state.user) {
+      this.setState({user: this.props.user})
+    }
   }
 
   componentDidMount() {
@@ -85,6 +91,7 @@ class Sudoku extends Component {
         })
         .catch(function (error) {
           console.log('error', error);
+          this.setState({ errors: error })
         });
      }
 
@@ -131,6 +138,10 @@ class Sudoku extends Component {
         this.handleValidation(changedPuzzle);
       }
 
+      handleFinishedPuzzle(){
+        this.setState({ color: 'white' })
+      }
+
      render() {
       return(
         <div>
@@ -143,6 +154,7 @@ class Sudoku extends Component {
               databaseUpdate={this.databaseUpdate}
               databaseRetrieve={this.databaseRetrieve}
               handlePuzzle={this.handlePuzzle}
+              handleFinishedPuzzle={this.handleFinishedPuzzle}
               />
           </div>
 
