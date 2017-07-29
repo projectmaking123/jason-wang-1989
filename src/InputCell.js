@@ -11,6 +11,7 @@ class InputCell extends Component {
     }
     this.handleChange = this.handleChange.bind(this)
     this.limitRange = this.limitRange.bind(this)
+    this.handleClick = this.handleClick.bind(this)
   }
 
   componentDidUpdate() {
@@ -38,7 +39,13 @@ class InputCell extends Component {
     });
     this.props.handleParentChange(this.state.board.join(""));
     this.props.handleStaticIndex();
-   }
+  }
+
+  handleClick() {
+    this.setState({
+      value: ''
+    })
+  }
 
   render() {
     return (
@@ -49,6 +56,7 @@ class InputCell extends Component {
             maxLength={1}
             style={{backgroundColor: this.props.color}}
             value={this.state.value}
+            onClick={this.handleClick}
             onChange={this.handleChange}
             onKeyPress={this.limitRange}
             />

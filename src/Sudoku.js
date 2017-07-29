@@ -93,7 +93,8 @@ class Sudoku extends Component {
        axios.get(`https://sudoku-api.herokuapp.com/api/v1/sudoku/${name}`)
        .then(response => {
          this.setState({
-           puzzle: response.data.data
+           puzzle: response.data.data,
+           value: response.data.data.join("")
          })
          this.handleStaticIndex()
         })
@@ -147,7 +148,7 @@ class Sudoku extends Component {
 
             <div className="board-container">
               {
-                this.state.puzzle.map((ele, i) => {
+                this.state.puzzle && this.state.puzzle.map((ele, i) => {
                   if(!this.state.staticIndex.includes(i)) {
                     return (
                       <InputCell

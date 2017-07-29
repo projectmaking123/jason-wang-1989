@@ -28,6 +28,24 @@ class Home extends Component {
         <Summary />
         <Future />
 
+          <h1 className="titles">Projects</h1>
+            <p>
+              My final group project at DBC was a site designed to allow users to trade and barter with the skills that they have, rather than purchasing services to learn. My group consisted of 5 including myself. We used the following techology on the project.
+            </p>
+            <ul className="projectList">
+              <li>Ruby on Rails</li>
+              <li>JQuery/Ajax</li>
+              <li>Bootstrap/CSS</li>
+              <li>Deployed to Heroku</li>
+            </ul>
+            <div id="projects">
+              <ul>
+                <li style={{textAlign: 'center', fontSize: '40px', listStyle: 'none'}}>
+                  <a href="https://tutor-skill.herokuapp.com">My final group project</a>
+                </li>
+              </ul>
+            </div>
+
         <h1 id="home">Design With Intention</h1>
         <div>
           <h2 id="quote">
