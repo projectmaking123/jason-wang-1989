@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import Home from './AboutMe'
-import Sudoku from './Sudoku'
+import Sudoku from './Sudoku';
+import Forecast from './Forecast';
+import Home from './Home';
 
 class MainApp extends Component{
   constructor(props) {
@@ -10,7 +11,6 @@ class MainApp extends Component{
       user: null
     }
   }
-
 
   componentDidUpdate() {
     if(this.props.user && !this.state.user) {
@@ -32,6 +32,7 @@ class MainApp extends Component{
       <div>
        <Switch>
          <Route exact path='/' component={Home}/>
+         <Route exact path='/forecast' component={Forecast}/>
          <Route path='/sudoku' render={SudokuGame}/>
          <Route default component={FourOhFour} />
        </Switch>
@@ -41,5 +42,3 @@ class MainApp extends Component{
 }
 
 export default MainApp;
-
-// <Route path='/aboutme' component={AboutMe}/>

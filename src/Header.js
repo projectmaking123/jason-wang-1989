@@ -13,11 +13,13 @@ class HeaderApp extends Component {
             <div className="main">
               <div className="button-row">
                 <div className='col-xs-6 col-sm-3'>
-                  <a href='/' title='Home'>
-                    </a>
+                  <a href='/' title='Home'></a>
                 </div>
                 <div className='col-xs-6 col-sm-3'>
-                  <a href='/sudoku' title="Play Sudoku!">Play Sudoku!</a>
+                  <a href='/sudoku' title="Play Sudoku!"></a>
+                </div>
+                <div className='col-xs-6 col-sm-3'>
+                  <a href='/forecast' title="Forecast"></a>
                 </div>
                 <div className='col-xs-6 col-sm-3'>
                   {
@@ -30,7 +32,7 @@ class HeaderApp extends Component {
               </div>
             </div>
           </div>
-          
+
       </header>
     );
   }

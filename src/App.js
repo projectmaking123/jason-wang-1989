@@ -22,10 +22,7 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        <div>
-
-        </div>
+      <div className="img-fluid app-background overlay">
         <HeaderApp user={this.state.currentUser} />
         <MainApp user={this.state.currentUser} />
       </div>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import InputCell from './InputCell';
 import Timer from './Timer';
 import { database } from './firebase'
-const axios = require('axios');
+import axios from 'axios'
 
 class Sudoku extends Component {
   constructor(props) {

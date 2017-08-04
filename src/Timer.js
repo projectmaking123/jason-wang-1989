@@ -7,7 +7,8 @@ class Timer extends Component {
     super(props)
     this.state = {
       count: 0,
-      user: null
+      user: null,
+      disabled: false
     }
     this.startTimer = this.startTimer.bind(this)
     this.stopTimer = this.stopTimer.bind(this)
@@ -40,6 +41,7 @@ class Timer extends Component {
     this.props.stopTimer()
     this.props.handleSudokuApi(e)
     this.props.handleFinishedPuzzle()
+    this.setState({disabled: true})
   }
 
   handleParentDatabaseUpdate() {
@@ -57,14 +59,17 @@ class Timer extends Component {
   }
 
   handleParentPuzzle(e) {
-    this.setState({ count: 0 })
+    this.setState({
+      count: 0,
+      disabled: false
+     })
     this.props.handlePuzzle(e.target.name)
   }
 
   render () {
     return (
     <div>
-      <h1>INSTRUCTIONS</h1>
+      <h1 className="titles">INSTRUCTIONS</h1>
       <div className="instructions">
         <ul>
           <li>Select the difficulty of the puzzle you wish to play</li>
@@ -127,7 +132,7 @@ class Timer extends Component {
 
       <div className='timer'>
         <h1>{this.state.count}</h1>
-        <button onClick={this.stopTimer}>
+        <button disabled={this.state.disabled} onClick={this.stopTimer}>
           Solve
         </button>
       </div>
