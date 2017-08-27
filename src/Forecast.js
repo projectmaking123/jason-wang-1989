@@ -69,7 +69,7 @@ class Forecast extends Component {
     const today = new Date()
     if(temp.icon.includes('partly-cloudy')) {
       return <p key={key} className="col-md-2">
-        { today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (parseInt(today.getDate()) + key).toString()}
+        { today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (parseInt(today.getDate(), 10) + key).toString()}
         <br></br>
         {temp.apparentTemperatureMax}
         <br></br>
@@ -77,7 +77,7 @@ class Forecast extends Component {
       </p>
     } else if (temp.icon.includes('clear')) {
         return <p key={key} className="col-md-2">
-          { today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (parseInt(today.getDate()) + key).toString()}
+          { today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (parseInt(today.getDate(), 10) + key).toString()}
           <br></br>
           {temp.apparentTemperatureMax}
           <br></br>
@@ -85,7 +85,7 @@ class Forecast extends Component {
         </p>
     } else {
         return <p key={key} className="col-md-2">
-          { today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (parseInt(today.getDate()) + key).toString()}
+          { today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (parseInt(today.getDate(), 10) + key).toString()}
           <br></br>
           {temp.apparentTemperatureMax}
           <br></br>

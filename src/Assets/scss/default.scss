@@ -21,9 +21,13 @@ text-align: center;
   min-height: 100vh;
 }
 
-.overlay {
-  background-color: rgba(200,100,0,.5); // Tint color
-  background-blend-mode: multiply;
+.dark-overlay {
+  background-color: rgba(0,0,0,0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
 }
 
 i {
@@ -264,8 +268,8 @@ i {
 }
 
 .instructions ul li {
-  font-size: 30px;
-  padding:13px;
+  font-size: 10px;
+  padding:10px;
   text-align: center;
 }
 
@@ -279,19 +283,6 @@ i {
   margin-right: 47%;
   margin-top: 1%;
   width: 6%;
-}
-
-#home {
-  font-family: 'Cormorant Garamond';
-  border-bottom: 3px solid #e66c7e;
-  font-size: 48px;
-  font-weight: 400;
-  line-height: 72px;
-  letter-spacing: 35px;
-  text-align: center;
-  text-indent: 24px;
-  text-transform: uppercase;
-  color: white;
 }
 
 .board-container {

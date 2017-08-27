@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Sudoku from './Sudoku';
 import Forecast from './Forecast';
-import Home from './Home';
 
 class MainApp extends Component{
   constructor(props) {
@@ -31,9 +30,8 @@ class MainApp extends Component{
     return (
       <div>
        <Switch>
-         <Route exact path='/' component={Home}/>
+         <Route exact path='/' render={SudokuGame}/>
          <Route exact path='/forecast' component={Forecast}/>
-         <Route path='/sudoku' render={SudokuGame}/>
          <Route default component={FourOhFour} />
        </Switch>
      </div>
